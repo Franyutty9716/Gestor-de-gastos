@@ -1,11 +1,26 @@
 #Aqui guardo todos los gastos mientras el programa esta abierto
+import json
 gastos = [] 
 def mostrar_menu():
     print("\n--- Gestor de gastos --- ")
     print("1. Agregar gasto")
     print("2. Ver gastos")
     print("3. Ver total")
-    print("4. Salir")
+    print("4. Borrar gasto")
+    print("5. Salir")
+
+#Guardar lista de gastos en un archivo para no perderla al cerrar
+def guardar_gastos():
+    with open("gastos.json", "w", encoding="utf-8") as archivo:
+        json.dump(gastos, archivo, indent=4, ensure_ascii=False)
+
+#Lee el archivo al iniciar; si no existe todavia, empieza con lista vacia
+def cargar_gastos():
+    try:
+        with open("gastos.json", "r", encoding="utf-8") as archivo:
+            return json.load(archivo)
+    except FileNotFoundError:
+        return []
 
 #Esta funcion pide los datos del gasto y lo guarda en la lista de gastos
 def agregar_gasto():
@@ -31,7 +46,22 @@ def total_gastos():
         total += gasto["monto"] #Suma el monto de cada gasto
     return total    
 
-#Ciclo principal: repite el menu hasta que elija 3 (break)
+#Muestra los gastos numerados y borra el que elija el usuario
+def borrar_gasto():
+    if len(gastos)== 0:
+        print("No hay gastos para borrar.")
+        return
+    for numero, gasto in enumerate(gastos, start=1):
+        print(f"{numero}. {gasto['descripcion']} - ${gasto['monto']} ({gasto['categoria']})")
+    posicion = int(input("Numero del gasto a borrar: "))
+    gasto_borrado = gastos.pop(posicion - 1)
+    guardar_gastos()
+    print(f"Gasto '{gasto_borrado['descripcion']}' borrado.")
+
+#Al iniciar, cargo los gastos guardados
+gastos = cargar_gastos()
+        
+#Ciclo principal: repite el menu hasta que elija 5 (break)
 while True:
     mostrar_menu()
     opcion = input("Elige una opcion: ")
@@ -42,11 +72,12 @@ while True:
     elif opcion == "3":
         print(f"Total de gastos: ${total_gastos()}")
     elif opcion == "4":
+        borrar_gasto()
+    elif opcion == "5":
         print("Hasta luego")
         break
     else:
         print("Opcion no valida") 
-
 
       
     
