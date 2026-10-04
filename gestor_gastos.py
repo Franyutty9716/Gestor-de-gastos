@@ -29,6 +29,7 @@ def agregar_gasto():
     categoria = input("Categoria: ")
     gasto = {"descripcion": descripcion, "monto": monto, "categoria": categoria}
     gastos.append(gasto)
+    guardar_gastos()
     print("Gasto agregado.")
 
 #Recorre la lista y muestra cada gasto; si esta vacia, avisa y sale con return
