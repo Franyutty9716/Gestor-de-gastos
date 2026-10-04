@@ -53,13 +53,20 @@ def total_gastos():
 
 #Muestra los gastos numerados y borra el que elija el usuario
 def borrar_gasto():
-    if len(gastos)== 0:
+    if len(gastos) == 0:
         print("No hay gastos para borrar.")
         return
     for numero, gasto in enumerate(gastos, start=1):
         print(f"{numero}. {gasto['descripcion']} - ${gasto['monto']} ({gasto['categoria']})")
-    posicion = int(input("Numero del gasto a borrar: "))
-    gasto_borrado = gastos.pop(posicion - 1)
+    try:
+        posicion = int(input("Numero del gasto a borrar: "))
+    except ValueError:
+        print("Debes escribir un numero.")
+        return
+    if posicion < 1 or posicion > len(gastos):
+        print("Ese numero no existe.")
+        return
+    gasto_borrado = gastos.pop(posicion - 1)  #Elimina el gasto de la lista
     guardar_gastos()
     print(f"Gasto '{gasto_borrado['descripcion']}' borrado.")
 
