@@ -1,5 +1,11 @@
 import json
 from fastapi import FastAPI
+from pydantic import BaseModel
+
+class Gasto(BaseModel):
+    descripcion: str
+    monto: float
+    categoria: str
 
 app = FastAPI()
 
@@ -10,6 +16,11 @@ def leer_gastos():
             return json.load(archivo)
     except FileNotFoundError:
         return []
+
+#Guarda la lista de gastos en el archivo
+def guardar_gastos(gastos):
+    with open("gastos.json", "w", encoding="utf-8") as archivo:
+        json.dump(gastos, archivo, indent=4, ensure_ascii=False)
 
 #Ruta de prueba: responde cuando alguien entra a la direccion principal
 @app.get("/")
@@ -28,3 +39,11 @@ def total_gastos():
     for gasto in leer_gastos():
         total += gasto["monto"]
     return {"total": total}
+
+#Recibe un gasto nuevo y lo agrega al archivo
+@app.post("/gastos")
+def agregar_gasto(gasto: Gasto):
+    gastos = leer_gastos()
+    gastos.append(gasto.model_dump())
+    guardar_gastos(gastos)
+    return {"mensaje": "Gasto agregado"}
