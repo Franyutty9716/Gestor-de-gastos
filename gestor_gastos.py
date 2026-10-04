@@ -25,7 +25,11 @@ def cargar_gastos():
 #Esta funcion pide los datos del gasto y lo guarda en la lista de gastos
 def agregar_gasto():
     descripcion = input("Descripcion: ")
-    monto = float(input("Monto: ")) #Convierte el texto a numero
+    try:
+        monto = float(input("Monto: "))  #Convierte el texto a numero
+    except ValueError:
+        print("El monto debe ser un numero.")
+        return
     categoria = input("Categoria: ")
     gasto = {"descripcion": descripcion, "monto": monto, "categoria": categoria}
     gastos.append(gasto)
